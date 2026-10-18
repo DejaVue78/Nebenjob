@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nebenjob</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nebenjob">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f4f5f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121413" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+:root{
+  --bg:#f4f5f4; --surface:#ffffff; --surface-2:#eceeec; --text:#161917; --muted:#5d645f;
+  --line:#dde1de; --accent:#0d6e5f; --accent-text:#ffffff; --accent-soft:#e1efec;
+  --danger:#b3261e; --warn-bg:#fdf3dc; --warn-text:#6b4d00;
+  --radius:14px; --shadow:0 8px 24px rgba(20,40,34,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#121413; --surface:#1c1f1d; --surface-2:#262a27; --text:#eef1ef; --muted:#a2aaa5;
+    --line:#2f3431; --accent:#4cc2ab; --accent-text:#08201b; --accent-soft:#183a33;
+    --danger:#f2867e; --warn-bg:#3a2f12; --warn-text:#f4d68a;
+    --shadow:0 8px 24px rgba(0,0,0,.45);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text)}
+body{
+  font:17px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;
+  min-height:100dvh;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + 96px) env(safe-area-inset-left);
+  -webkit-font-smoothing:antialiased;
+}
+svg.i{width:22px;height:22px;flex:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px}
+
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 0 6px}
+header h1{font-size:30px;font-weight:700;letter-spacing:-.02em;margin:0}
+.icon-btn{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--accent)}
+.icon-btn:active{background:var(--surface-2)}
+
+.month{display:flex;align-items:center;justify-content:space-between;margin:8px 0 12px}
+.month span{font-size:18px;font-weight:600}
+
+.summary{background:var(--surface);border-radius:var(--radius);padding:18px 18px 14px}
+.summary .big{font-size:36px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.summary .sub{color:var(--muted);font-variant-numeric:tabular-nums}
+.summary .year{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:var(--muted);font-size:15px;font-variant-numeric:tabular-nums}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;width:100%;border-radius:12px;font-weight:600;transition:transform .12s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent);color:var(--accent-text)}
+.btn-soft{background:var(--accent-soft);color:var(--accent)}
+.btn-plain{background:var(--surface-2);color:var(--text)}
+.btn-danger{background:transparent;color:var(--danger)}
+.btn[disabled]{opacity:.45}
+.pdf-btn{margin:12px 0 22px}
+
+.notice{background:var(--warn-bg);color:var(--warn-text);border-radius:12px;padding:12px 14px;font-size:15px;margin:0 0 12px;display:flex;gap:10px;align-items:flex-start}
+.notice button{color:inherit;font-weight:600;text-decoration:underline;padding:0;font-size:15px}
+
+h2{font-size:14px;font-weight:600;color:var(--muted);margin:0 0 8px 4px}
+.list{background:var(--surface);border-radius:var(--radius);overflow:hidden}
+.row{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;padding:13px 16px;gap:12px}
+.row + .row{border-top:1px solid var(--line)}
+.row:active{background:var(--surface-2)}
+.row .d{font-weight:600}
+.row .t,.row .m{color:var(--muted);font-size:15px;font-variant-numeric:tabular-nums}
+.row .r{text-align:right;font-variant-numeric:tabular-nums}
+.pair span + span{margin-left:14px}
+.empty{color:var(--muted);text-align:center;padding:34px 20px;font-size:15px}
+
+.fab{position:fixed;right:max(20px, env(safe-area-inset-right));bottom:calc(env(safe-area-inset-bottom) + 20px);width:60px;height:60px;border-radius:50%;background:var(--accent);color:var(--accent-text);display:grid;place-items:center;box-shadow:var(--shadow);transition:transform .12s}
+.fab:active{transform:scale(.94)}
+.fab svg{width:28px;height:28px}
+
+dialog{border:0;padding:0;margin:auto auto 0;width:100%;max-width:560px;max-height:92dvh;border-radius:18px 18px 0 0;background:var(--bg);color:var(--text);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(0,0,0,.35)}
+dialog[open]{animation:up .22s cubic-bezier(.16,1,.3,1)}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion: reduce){dialog[open]{animation:none}.btn,.fab{transition:none}}
+.sheet{padding:8px 16px calc(env(safe-area-inset-bottom) + 18px)}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;padding:6px 0 10px}
+.sheet-head h3{margin:0;font-size:20px}
+.group{background:var(--surface);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}
+.field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 16px;min-height:52px}
+.field + .field{border-top:1px solid var(--line)}
+.field label{font-weight:500}
+.field input{font:inherit;font-size:17px;color:var(--text);background:transparent;border:0;text-align:right;min-width:0;flex:1;padding:8px 0;font-variant-numeric:tabular-nums}
+.field input:focus{outline:none}
+.field input[type=date],.field input[type=time]{-webkit-appearance:none;appearance:none;flex:0 1 auto;background:var(--surface-2);border-radius:8px;padding:7px 10px;color:var(--text);min-height:36px}
+.field:focus-within{box-shadow:inset 3px 0 0 var(--accent)}
+.preview{text-align:center;color:var(--muted);margin:2px 0 14px;font-variant-numeric:tabular-nums;min-height:22px}
+.preview strong{color:var(--text)}
+.error{color:var(--danger)}
+.stack{display:grid;gap:10px}
+.hint{color:var(--muted);font-size:14px;margin:-6px 4px 14px}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 96px);transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:15px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10;white-space:nowrap}
+.toast.show{opacity:1}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Nebenjob</h1>
+    <button class="icon-btn" id="openSettings" aria-label="Einstellungen"><svg class="i" data-i="gear"></svg></button>
+  </header>
+
+  <div id="notices"></div>
+
+  <div class="month">
+    <button class="icon-btn" id="prevMonth" aria-label="Vorheriger Monat"><svg class="i" data-i="left"></svg></button>
+    <span id="monthLabel"></span>
+    <button class="icon-btn" id="nextMonth" aria-label="Nächster Monat"><svg class="i" data-i="right"></svg></button>
+  </div>
+
+  <section class="summary" aria-live="polite">
+    <div class="big" id="sumMoney"></div>
+    <div class="sub" id="sumHours"></div>
+    <div class="year"><span id="yearLabel"></span><span id="yearValues" class="pair"><span></span><span></span></span></div>
+  </section>
+
+  <button class="btn btn-soft pdf-btn" id="makePdf"><svg class="i" data-i="pdf"></svg>Stundenzettel erstellen</button>
+
+  <h2 id="listTitle">Einträge</h2>
+  <div class="list" id="list"></div>
+</div>
+
+<button class="fab" id="addEntry" aria-label="Eintrag hinzufügen"><svg class="i" data-i="plus"></svg></button>
+
+<!-- Eintrag -->
+<dialog id="entryDlg">
+  <form class="sheet" id="entryForm" method="dialog" novalidate>
+    <div class="sheet-head">
+      <h3 id="entryTitle">Neuer Eintrag</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Schließen"><svg class="i" data-i="x"></svg></button>
+    </div>
+    <div class="group">
+      <div class="field"><label for="fDate">Datum</label><input type="date" id="fDate" required></div>
+      <div class="field"><label for="fStart">Von</label><input type="time" id="fStart" required></div>
+      <div class="field"><label for="fEnd">Bis</label><input type="time" id="fEnd" required></div>
+      <div class="field"><label for="fRate">Stundenlohn €</label><input type="text" id="fRate" inputmode="decimal" autocomplete="off"></div>
+    </div>
+    <div class="preview" id="preview"></div>
+    <div class="stack">
+      <button type="submit" class="btn btn-primary" id="saveEntry">Speichern</button>
+      <button type="button" class="btn btn-danger hidden" id="deleteEntry"><svg class="i" data-i="trash"></svg>Eintrag löschen</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Einstellungen -->
+<dialog id="settingsDlg">
+  <form class="sheet" id="settingsForm" method="dialog" novalidate>
+    <div class="sheet-head">
+      <h3>Einstellungen</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Schließen"><svg class="i" data-i="x"></svg></button>
+    </div>
+    <div class="group">
+      <div class="field"><label for="sName">Name</label><input type="text" id="sName" autocomplete="name" placeholder="Für den Stundenzettel"></div>
+      <div class="field"><label for="sRate">Stundenlohn €</label><input type="text" id="sRate" inputmode="decimal" autocomplete="off" placeholder="0,00"></div>
+    </div>
+    <p class="hint">Der Stundenlohn gilt für neue Einträge. Bestehende Einträge behalten ihren Lohn.</p>
+    <button type="submit" class="btn btn-primary" style="margin-bottom:22px">Speichern</button>
+
+    <h2>Datensicherung</h2>
+    <p class="hint" style="margin-top:0" id="backupInfo"></p>
+    <div class="stack">
+      <button type="button" class="btn btn-plain" id="exportBtn"><svg class="i" data-i="down"></svg>Sicherung speichern</button>
+      <button type="button" class="btn btn-plain" id="importBtn"><svg class="i" data-i="up"></svg>Sicherung laden</button>
+      <input type="file" id="importFile" accept="application/json,.json" class="hidden">
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="jspdf.umd.min.js"></script>
+<script>
+"use strict";
+/* Icons: Phosphor Icons (regular), MIT-Lizenz */
+const ICONS = {
+  gear:'M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm88-29.84q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.21,107.21,0,0,0-10.88-26.25,8,8,0,0,0-6-3.930l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.71,107.71,0,0,0-26.25-10.87,8,8,0,0,0-7.06,1.49L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.270q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.21,107.21,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.060Zm-16.1-6.5a73.93,73.93,0,0,1,0,8.68,8,8,0,0,0,1.74,5.48l14.19,17.73a91.57,91.57,0,0,1-6.23,15L187,173.11a8,8,0,0,0-5.1,2.64,74.11,74.11,0,0,1-6.140,6.14,8,8,0,0,0-2.64,5.1l-2.51,22.58a91.32,91.32,0,0,1-15,6.23l-17.74-14.19a8,8,0,0,0-5-1.75h-.48a73.93,73.93,0,0,1-8.68,0,8,8,0,0,0-5.48,1.74L100.45,215.8a91.57,91.57,0,0,1-15-6.23L82.89,187a8,8,0,0,0-2.64-5.1,74.11,74.11,0,0,1-6.14-6.14,8,8,0,0,0-5.1-2.64L46.43,170.6a91.32,91.32,0,0,1-6.23-15l14.19-17.74a8,8,0,0,0,1.74-5.48,73.93,73.93,0,0,1,0-8.68,8,8,0,0,0-1.74-5.48L40.2,100.45a91.57,91.57,0,0,1,6.23-15L69,82.89a8,8,0,0,0,5.1-2.64,74.11,74.11,0,0,1,6.14-6.14A8,8,0,0,0,82.89,69L85.4,46.43a91.32,91.32,0,0,1,15-6.23l17.74,14.19a8,8,0,0,0,5.48,1.74,73.93,73.93,0,0,1,8.68,0,8,8,0,0,0,5.48-1.74L155.55,40.2a91.57,91.57,0,0,1,15,6.23L173.11,69a8,8,0,0,0,2.64,5.1,74.11,74.11,0,0,1,6.14,6.14,8,8,0,0,0,5.1,2.64l22.58,2.51a91.32,91.32,0,0,1,6.23,15l-14.19,17.74A8,8,0,0,0,199.87,123.66Z',
+  plus:'M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z',
+  left:'M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z',
+  right:'M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z',
+  pdf:'M224,152a8,8,0,0,1-8,8H192v16h16a8,8,0,0,1,0,16H192v16a8,8,0,0,1-16,0V152a8,8,0,0,1,8-8h32A8,8,0,0,1,224,152ZM92,172a28,28,0,0,1-28,28H56v8a8,8,0,0,1-16,0V152a8,8,0,0,1,8-8H64A28,28,0,0,1,92,172Zm-16,0a12,12,0,0,0-12-12H56v24h8A12,12,0,0,0,76,172Zm88,8a36,36,0,0,1-36,36H112a8,8,0,0,1-8-8V152a8,8,0,0,1,8-8h16A36,36,0,0,1,164,180Zm-16,0a20,20,0,0,0-20-20h-8v40h8A20,20,0,0,0,148,180ZM40,112V40A16,16,0,0,1,56,24h96a8,8,0,0,1,5.66,2.34l56,56A8,8,0,0,1,216,88v24a8,8,0,0,1-16,0V96H152a8,8,0,0,1-8-8V40H56v72a8,8,0,0,1-16,0ZM160,80h28.69L160,51.31Z',
+  trash:'M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z',
+  down:'M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.320Z',
+  up:'M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0ZM93.66,77.66,120,51.31V144a8,8,0,0,0,16,0V51.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,77.66Z',
+  x:'M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z'
+};
+document.querySelectorAll('svg[data-i]').forEach(s=>{
+  s.setAttribute('viewBox','0 0 256 256'); s.setAttribute('fill','currentColor'); s.setAttribute('aria-hidden','true');
+  s.innerHTML='<path d="'+ICONS[s.dataset.i]+'"/>';
+});
+
+/* ---------- Daten ---------- */
+const KEY='nebenjob-v1';
+const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const WD=['So','Mo','Di','Mi','Do','Fr','Sa'];
+const eur=new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'});
+const dec=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+function blank(){return {version:1,settings:{name:'',rate:0},entries:[],lastBackup:null}}
+function load(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(!raw) return blank();
+    const d=JSON.parse(raw);
+    return valid(d)?d:blank();
+  }catch(e){return blank()}
+}
+function valid(d){return d&&typeof d==='object'&&d.settings&&Array.isArray(d.entries)}
+let data=load();
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(data)); return true}
+  catch(e){toast('Speichern fehlgeschlagen'); return false}
+}
+if(navigator.storage&&navigator.storage.persist){navigator.storage.persist().catch(()=>{})}
+
+/* ---------- Hilfsfunktionen ---------- */
+const $=id=>document.getElementById(id);
+const pad=n=>String(n).padStart(2,'0');
+const isoDate=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const toMin=t=>{const [h,m]=t.split(':').map(Number);return h*60+m};
+function minutes(e){let m=toMin(e.end)-toMin(e.start);if(m<=0)m+=1440;return m}
+const hm=m=>Math.floor(m/60)+':'+pad(m%60);
+const decHours=m=>dec.format(m/60);
+const money=(m,rate)=>Math.round(m/60*rate*100)/100;
+function parseNum(s){const v=parseFloat(String(s).trim().replace(/\./g,'').replace(',','.'));return isFinite(v)?v:NaN}
+function parseRate(s){ // akzeptiert 13,90 / 13.90 / 13
+  s=String(s).trim(); if(!s) return NaN;
+  if(/^\d+([.,]\d{1,2})?$/.test(s)) return parseFloat(s.replace(',','.'));
+  return parseNum(s);
+}
+const fmtRate=r=>r?dec.format(r):'';
+function dateLabel(iso){const d=new Date(iso+'T12:00:00');return WD[d.getDay()]+', '+pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'}
+let toastTimer;
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200)}
+
+/* ---------- Ansicht ---------- */
+const now=new Date();
+let viewY=now.getFullYear(), viewM=now.getMonth();
+const monthKey=(y,m)=>y+'-'+pad(m+1);
+
+function entriesOfMonth(y,m){
+  const k=monthKey(y,m);
+  return data.entries.filter(e=>e.date.slice(0,7)===k)
+    .sort((a,b)=>a.date===b.date?toMin(a.start)-toMin(b.start):a.date<b.date?-1:1);
+}
+function totals(list){
+  let mins=0,cents=0;
+  list.forEach(e=>{const m=minutes(e);mins+=m;cents+=Math.round(money(m,e.rate)*100)});
+  return {mins,money:cents/100};
+}
+
+function render(){
+  $('monthLabel').textContent=MONTHS[viewM]+' '+viewY;
+  const list=entriesOfMonth(viewY,viewM);
+  const t=totals(list);
+  $('sumMoney').textContent=eur.format(t.money);
+  $('sumHours').textContent=hm(t.mins)+' Std. in '+list.length+(list.length===1?' Eintrag':' Einträgen');
+  const yl=data.entries.filter(e=>e.date.slice(0,4)===String(viewY));
+  const yt=totals(yl);
+  $('yearLabel').textContent='Jahr '+viewY;
+  $('yearValues').children[0].textContent=hm(yt.mins)+' Std.';
+  $('yearValues').children[1].textContent=eur.format(yt.money);
+  $('makePdf').disabled=list.length===0;
+
+  const box=$('list'); box.innerHTML='';
+  if(!list.length){
+    box.innerHTML='<div class="empty">Keine Einträge in diesem Monat.<br>Mit + trägst du einen Abend ein.</div>';
+  }else{
+    list.slice().reverse().forEach(e=>{
+      const m=minutes(e);
+      const b=document.createElement('button');
+      b.className='row'; b.type='button';
+      b.innerHTML='<div><div class="d"></div><div class="t"></div></div><div class="r"><div class="d"></div><div class="m"></div></div>';
+      const [l,r]=b.children;
+      l.children[0].textContent=dateLabel(e.date);
+      l.children[1].textContent=e.start+' bis '+e.end+' Uhr';
+      r.children[0].textContent=hm(m)+' Std.';
+      r.children[1].textContent=eur.format(money(m,e.rate));
+      b.addEventListener('click',()=>openEntry(e));
+      box.appendChild(b);
+    });
+  }
+  renderNotices();
+}
+
+function renderNotices(){
+  const n=$('notices'); n.innerHTML='';
+  const add=(text,label,fn)=>{
+    const d=document.createElement('div'); d.className='notice';
+    const s=document.createElement('span'); s.textContent=text+' ';
+    const b=document.createElement('button'); b.type='button'; b.textContent=label; b.onclick=fn;
+    s.appendChild(b); d.appendChild(s); n.appendChild(d);
+  };
+  if(!data.settings.rate) add('Noch kein Stundenlohn hinterlegt.','Jetzt eintragen',openSettings);
+  const days=data.lastBackup?(Date.now()-new Date(data.lastBackup))/864e5:Infinity;
+  if(data.entries.length>=4&&days>30) add(data.lastBackup?'Letzte Sicherung ist über 30 Tage her.':'Deine Einträge sind noch nicht gesichert.','Jetzt sichern',exportBackup);
+}
+
+$('prevMonth').onclick=()=>{viewM--;if(viewM<0){viewM=11;viewY--}render()};
+$('nextMonth').onclick=()=>{viewM++;if(viewM>11){viewM=0;viewY++}render()};
+
+/* ---------- Eintrag ---------- */
+let editing=null;
+const dlg=$('entryDlg');
+function openEntry(e){
+  editing=e||null;
+  $('entryTitle').textContent=e?'Eintrag bearbeiten':'Neuer Eintrag';
+  $('deleteEntry').classList.toggle('hidden',!e);
+  if(e){
+    $('fDate').value=e.date; $('fStart').value=e.start; $('fEnd').value=e.end; $('fRate').value=fmtRate(e.rate);
+  }else{
+    const today=new Date();
+    const inView=today.getFullYear()===viewY&&today.getMonth()===viewM;
+    $('fDate').value=isoDate(inView?today:new Date(viewY,viewM,1));
+    $('fStart').value='18:00'; $('fEnd').value=''; $('fRate').value=fmtRate(data.settings.rate);
+  }
+  updatePreview();
+  dlg.showModal();
+}
+function readForm(){
+  const date=$('fDate').value, start=$('fStart').value, end=$('fEnd').value;
+  const rate=$('fRate').value.trim()===''?0:parseRate($('fRate').value);
+  if(!date) return {err:'Bitte ein Datum wählen.'};
+  if(!start||!end) return {err:'Bitte Von und Bis eintragen.'};
+  if(start===end) return {err:'Von und Bis sind gleich.'};
+  if(isNaN(rate)||rate<0) return {err:'Stundenlohn ist ungültig.'};
+  const e={date,start,end,rate};
+  const m=minutes(e);
+  if(m>16*60) return {err:'Mehr als 16 Stunden. Bitte Zeiten prüfen.'};
+  return {e,m,overnight:toMin(end)<toMin(start)};
+}
+function updatePreview(){
+  const p=$('preview');
+  if(!$('fEnd').value){p.textContent='';return}
+  const r=readForm();
+  if(r.err){p.innerHTML='<span class="error"></span>';p.firstChild.textContent=r.err;return}
+  p.innerHTML='<strong class="pair"><span></span><span></span></strong>';
+  p.firstChild.children[0].textContent=hm(r.m)+' Std.';
+  p.firstChild.children[1].textContent=eur.format(money(r.m,r.e.rate));
+  if(r.overnight) p.append(' (bis zum Folgetag)');
+}
+['fDate','fStart','fEnd','fRate'].forEach(id=>$(id).addEventListener('input',updatePreview));
+$('entryForm').addEventListener('submit',ev=>{
+  ev.preventDefault();
+  const r=readForm();
+  if(r.err){updatePreview();if(!$('fEnd').value){$('preview').innerHTML='<span class="error">Bitte Bis eintragen.</span>'}return}
+  if(editing){Object.assign(editing,r.e)}
+  else{data.entries.push(Object.assign({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6)},r.e))}
+  if(!save()) return;
+  const d=new Date(r.e.date+'T12:00:00'); viewY=d.getFullYear(); viewM=d.getMonth();
+  dlg.close(); render(); toast(editing?'Geändert':'Gespeichert');
+});
+$('deleteEntry').onclick=()=>{
+  if(!editing) return;
+  if(!confirm('Diesen Eintrag wirklich löschen?')) return;
+  data.entries=data.entries.filter(x=>x!==editing);
+  save(); dlg.close(); render(); toast('Gelöscht');
+};
+$('addEntry').onclick=()=>openEntry(null);
+
+/* ---------- Einstellungen ---------- */
+const sdlg=$('settingsDlg');
+function openSettings(){
+  $('sName').value=data.settings.name||'';
+  $('sRate').value=fmtRate(data.settings.rate);
+  $('backupInfo').textContent=data.lastBackup
+    ?'Letzte Sicherung: '+new Date(data.lastBackup).toLocaleDateString('de-DE')+'. Speichere die Datei in iCloud Drive, dann ist sie auch bei Verlust des iPhones sicher.'
+    :'Noch keine Sicherung. Speichere die Datei in iCloud Drive, dann ist sie auch bei Verlust des iPhones sicher.';
+  sdlg.showModal();
+}
+$('openSettings').onclick=openSettings;
+$('settingsForm').addEventListener('submit',ev=>{
+  ev.preventDefault();
+  const raw=$('sRate').value.trim();
+  const rate=raw===''?0:parseRate(raw);
+  if(isNaN(rate)||rate<0){toast('Stundenlohn ist ungültig');return}
+  data.settings.name=$('sName').value.trim();
+  data.settings.rate=Math.round(rate*100)/100;
+  if(save()){sdlg.close();render();toast('Einstellungen gespeichert')}
+});
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
+document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',ev=>{if(ev.target===d)d.close()}));
+
+/* ---------- Datei teilen / herunterladen ---------- */
+async function deliver(blob,filename){
+  const file=new File([blob],filename,{type:blob.type});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{await navigator.share({files:[file]});return true}
+    catch(e){if(e.name==='AbortError')return false}
+  }
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+  return true;
+}
+
+/* ---------- Sicherung ---------- */
+async function exportBackup(){
+  const stamp=isoDate(new Date());
+  const payload=Object.assign({},data,{exportedAt:new Date().toISOString()});
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const ok=await deliver(blob,'Nebenjob-Sicherung_'+stamp+'.json');
+  if(ok){data.lastBackup=new Date().toISOString();save();render();
+    if(sdlg.open) openSettings(); toast('Sicherung erstellt')}
+}
+$('exportBtn').onclick=exportBackup;
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').addEventListener('change',async ev=>{
+  const f=ev.target.files[0]; ev.target.value='';
+  if(!f) return;
+  try{
+    const d=JSON.parse(await f.text());
+    if(!valid(d)) throw new Error('format');
+    const ok=d.entries.every(e=>/^\d{4}-\d{2}-\d{2}$/.test(e.date)&&/^\d{2}:\d{2}$/.test(e.start)&&/^\d{2}:\d{2}$/.test(e.end)&&typeof e.rate==='number');
+    if(!ok) throw new Error('format');
+    if(!confirm('Sicherung mit '+d.entries.length+' Einträgen laden? Die aktuellen Daten in der App werden dabei ersetzt.')) return;
+    data={version:1,settings:{name:d.settings.name||'',rate:Number(d.settings.rate)||0},entries:d.entries,lastBackup:d.lastBackup||d.exportedAt||null};
+    save(); sdlg.close(); render(); toast('Sicherung geladen');
+  }catch(e){toast('Datei ist keine gültige Sicherung')}
+});
+
+/* ---------- Stundenzettel PDF ---------- */
+$('makePdf').onclick=async()=>{
+  const list=entriesOfMonth(viewY,viewM);
+  if(!list.length) return;
+  if(!data.settings.name&&!confirm('In den Einstellungen ist kein Name hinterlegt. Stundenzettel trotzdem ohne Namen erstellen?')) return;
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'a4'});
+  const L=20, R=190;
+  const cols=[{x:L,t:'Datum'},{x:L+50,t:'Von'},{x:L+80,t:'Bis'},{x:R,t:'Dauer (Std.)',right:true}];
+  let y=26;
+  doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.text('Stundenzettel',L,y);
+  y+=10; doc.setFontSize(11); doc.setFont('helvetica','normal');
+  if(data.settings.name){doc.text('Name: '+data.settings.name,L,y); y+=6}
+  doc.text('Monat: '+MONTHS[viewM]+' '+viewY,L,y);
+  y+=12;
+  const head=()=>{
+    doc.setFont('helvetica','bold');
+    cols.forEach(c=>doc.text(c.t,c.x,y,c.right?{align:'right'}:undefined));
+    y+=2.5; doc.setLineWidth(.4); doc.line(L,y,R,y); y+=6.5;
+    doc.setFont('helvetica','normal');
+  };
+  head();
+  let total=0;
+  list.forEach((e,i)=>{
+    if(y>270){doc.addPage(); y=26; head()}
+    const m=minutes(e); total+=m;
+    const d=new Date(e.date+'T12:00:00');
+    doc.text(WD[d.getDay()]+', '+pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear(),cols[0].x,y);
+    doc.text(e.start,cols[1].x,y);
+    doc.text(e.end+(toMin(e.end)<toMin(e.start)?' (+1)':''),cols[2].x,y);
+    doc.text(hm(m),cols[3].x,y,{align:'right'});
+    y+=3; doc.setDrawColor(210); doc.setLineWidth(.2); doc.line(L,y,R,y); doc.setDrawColor(0); y+=5;
+  });
+  if(y>262){doc.addPage(); y=26}
+  y+=1; doc.setLineWidth(.4); doc.line(L,y-4,R,y-4);
+  doc.setFont('helvetica','bold');
+  doc.text('Gesamt',L,y+1);
+  doc.text(hm(total)+' Std.  ('+decHours(total)+' Std.)',R,y+1,{align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(120);
+  doc.text('Erstellt am '+new Date().toLocaleDateString('de-DE'),L,287);
+  const safeName=(data.settings.name||'').replace(/[^\wäöüÄÖÜß-]+/g,'_').replace(/^_|_$/g,'');
+  const fn='Stundenzettel_'+viewY+'-'+pad(viewM+1)+(safeName?'_'+safeName:'')+'.pdf';
+  await deliver(doc.output('blob'),fn);
+};
+
+/* ---------- Start ---------- */
+render();
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
